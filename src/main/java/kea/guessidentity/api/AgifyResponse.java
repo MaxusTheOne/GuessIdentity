@@ -1,6 +1,6 @@
 package kea.guessidentity.api;
 
-public class ApiResponse {
+public class AgifyResponse {
 
     private int age;
 

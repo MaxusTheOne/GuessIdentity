@@ -3,12 +3,14 @@ package kea.guessidentity.person;
 import jakarta.persistence.*;
 import org.springframework.context.annotation.Primary;
 
-@Entity
+import java.util.Arrays;
+import java.util.List;
+
 public class Person {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    public Person(String name, String country) {
+
+    }
 
     public String getFullName() {
         return fullName;
@@ -16,6 +18,17 @@ public class Person {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+        List<String> names = Arrays.asList(fullName.split(" "));
+        if (names.size() == 1) {
+            this.firstName = names.get(0);
+        } else if (names.size() == 2) {
+            this.firstName = names.get(0);
+            this.lastName = names.get(1);
+        } else if (names.size() == 3) {
+            this.firstName = names.get(0);
+            this.middleName = names.get(1);
+            this.lastName = names.get(2);
+        }
     }
 
     public String getFirstName() {

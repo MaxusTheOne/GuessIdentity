@@ -1,6 +1,6 @@
 package kea.guessidentity.person;
 
-import kea.guessidentity.api.ApiResponse;
+import kea.guessidentity.api.AgifyResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,10 @@ public class PersonService {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<Integer> getEstimatedAge(String name) {
-        String url = agifyApiUrl + "?name=" + name;
-        ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+    public ResponseEntity<Integer> getEstimatedAge(String name, String country) {
+        String url = agifyApiUrl + "?name=" + name + "&country_id=" + country;
+
+        AgifyResponse response = restTemplate.getForObject(url, AgifyResponse.class);
         if (response != null) {
             return ResponseEntity.ok(response.getAge());
         } else {
