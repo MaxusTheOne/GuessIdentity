@@ -1,5 +1,10 @@
 package kea.guessidentity.person;
 
+import jakarta.annotation.Nullable;
+import kea.guessidentity.api.AgifyResponse;
+import kea.guessidentity.api.FullResponse;
+import kea.guessidentity.api.GenderizeResponse;
+import kea.guessidentity.api.NationalizeResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +25,36 @@ public class PersonController {
 
     // Testing endpoint for agify.io
     @GetMapping("/guess")
-    public ResponseEntity<Integer> getAge(@RequestParam String name, @RequestParam String country) {
-        Person personToSearch = new Person(name, country);
+    public ResponseEntity<FullResponse> getAge(@RequestParam(required = false) @Nullable String name, @RequestParam(required = false) @Nullable String firstName, @RequestParam(required = false) @Nullable String middleName, @RequestParam(required = false) @Nullable String lastName) {
+        Person personToSearch = new Person();
+        if (name != null) {
+           personToSearch.setFullName(name);
+        } else {
+            personToSearch.setFirstName(firstName);
+            personToSearch.setMiddleName(middleName);
+            personToSearch.setLastName(lastName);
+            if (middleName == null) {
+                personToSearch.setFullName(firstName + " " + lastName);
+            } else {
+                personToSearch.setFullName(firstName + " " + middleName + " " + lastName);
+            }
 
-        if (country == null) {
-            country = "dk";
         }
+
+
         System.out.println("Name: " + name);
-        return personService.getEstimatedAge(personToSearch.getFirstName(), personToSearch.getCountry());
+        AgifyResponse agifyResponse = personService.getEstimatedAge(personToSearch.getFirstName(), personToSearch.getCountry());
+        GenderizeResponse genderizeResponse = personService.getGender(personToSearch.getFirstName());
+        NationalizeResponse nationalizeResponse = null;
+        if (personToSearch.getLastName() != null) {
+            nationalizeResponse = personService.getNationality(personToSearch.getLastName());
+            System.out.println(nationalizeResponse.getCountry());
+        } else {
+            System.out.println("No last name found");
+            nationalizeResponse = new NationalizeResponse();
+        }
 
-
+        FullResponse fullResponse = new FullResponse(agifyResponse, genderizeResponse, nationalizeResponse, personToSearch);
+        return ResponseEntity.ok(fullResponse);
     }
 }

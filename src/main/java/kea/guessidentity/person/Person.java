@@ -6,10 +6,16 @@ import org.springframework.context.annotation.Primary;
 import java.util.Arrays;
 import java.util.List;
 
+@Cacheable
 public class Person {
 
-    public Person(String name, String country) {
+    private String fullName;
+    private String firstName;
+    private String middleName;
+    private String lastName;
 
+    public Person(String fullName) {
+        this.setFullName(fullName);
     }
 
     public String getFullName() {
@@ -29,6 +35,23 @@ public class Person {
             this.middleName = names.get(1);
             this.lastName = names.get(2);
         }
+    }
+
+    private String gender;
+    private Double genderProbability;
+    private int age;
+    private Double ageProbability;
+    private String country;
+    private Double countryProbability;
+
+    public Person() {
+    }
+
+    public Person(String fullName, String firstName, String middleName, String lastName) {
+        this.fullName = fullName;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
     }
 
     public String getFirstName() {
@@ -103,24 +126,4 @@ public class Person {
         this.countryProbability = countryProbability;
     }
 
-    private String fullName;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String gender;
-    private Double genderProbability;
-    private int age;
-    private Double ageProbability;
-    private String country;
-    private Double countryProbability;
-
-    public Person() {
-    }
-
-    public Person(String fullName, String firstName, String middleName, String lastName) {
-        this.fullName = fullName;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-    }
 }
